@@ -17,7 +17,6 @@ import { run$, registerCMD } from "@-0/spool"
 import { Err_missing_props, URL2obj } from "@-0/utils"
 import { __DOM_URL__ROUTE } from "../tasks"
 import { DOMnavigated$ } from "../core"
-import { $store$ } from "../store"
 import { ICommandObject } from "@-0/keys"
 import { SET_STATE } from "../commands"
 
@@ -81,12 +80,13 @@ export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command 
             [DOM_NODE]: node,
         }),
         [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node = document }) => {
-            const w_href = window.location.href
-            const parsed = URL2obj(w_href)
-            const w_path = `/${parsed[URL_PATH].join("/")}`
+            //const w_href = window.location.href
+            //const parsed = URL2obj(w_href)
+            //const w_path = `/${parsed[URL_PATH].join("/")}`
             // noop shortcut for both absolute and root
             // relative paths
-            if (url === w_href || url === w_path) return
+            //console.log({ url, w_href, w_path })
+            //if (url === w_href || url === w_path) return
             const props = { [URL_FULL]: url, [DOM_NODE]: node }
             if (url) return run$.next(ROUTE_HOT(props))
             console.warn(Err_missing_props("_NAVIGATE (from registerRouterDOM)", props))

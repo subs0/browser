@@ -9,7 +9,6 @@ import {
     //SET_STATE,
     _NOTIFY_PRERENDER_DOM,
     _SET_LINK_ATTRS_DOM,
-    createSetStateCMD,
 } from "../commands"
 
 import {

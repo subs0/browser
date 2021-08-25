@@ -29,7 +29,7 @@ import { setImmediate } from "timers"
 const router_fn = url => ({ [URL_DATA]: { here: "worn out places" }, [URL_PAGE]: "({ I }) => am a function" })
 
 describe("Tasks: routing", () => {
-    test("1: URL__ROUTE: function router CFG with simple data", async () => {
+    test("1: __URL__ROUTE: function router CFG with simple data", async () => {
         const SUBTASK = __URL__ROUTE(router_fn, SET_STATE)
         const before = $store$.deref()
         expect(before[$$_PATH]).toMatchObject([])
@@ -40,7 +40,7 @@ describe("Tasks: routing", () => {
         const after = $store$.deref()
         expect(after[$$_PATH]).toMatchObject(["logan", "was", "here"])
     })
-    test("2: DOM_URL__ROUTE: function router CFG with simple data", async () => {
+    test("2: __DOM_URL__ROUTE: function router CFG with simple data", async () => {
         const SUBTASK = __DOM_URL__ROUTE(router_fn, SET_STATE)
         run$.next([{ [CMD_ARGS]: { [URL_FULL]: "exit/stage", [DOM_NODE]: window } }, SUBTASK])
 
@@ -56,7 +56,7 @@ describe("Tasks: routing", () => {
             exit: { stage: { here: "worn out places" } },
         })
     })
-    test("3: URL__ROUTE: Object router CFG with simple data", async () => {
+    test("3: __URL__ROUTE: Object router CFG with simple data", async () => {
         // Object router configuration
         const router_obj = {
             [CFG_RUTR]: router_fn,
@@ -73,7 +73,7 @@ describe("Tasks: routing", () => {
         const after = $store$.deref()
         expect(after[$$_PATH]).toMatchObject(["now", "you", "dont"])
     })
-    test(`4: DOM_URL__ROUTE: Object router CFG with \`${RTR_PRFX}\` + \`${RTR_POST}\``, async () => {
+    test(`4: __DOM_URL__ROUTE: Object router CFG with \`${RTR_PRFX}\` + \`${RTR_POST}\``, async () => {
         //log$.subscribe(map(x => console.log("log$:", x)))
         const pre_spy = jest.fn(({ y }) => ({ z: y * y }))
         const PRE = registerCMD({

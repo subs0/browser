@@ -11,5 +11,5 @@ export declare type NavigationObject = {
 };
 export declare const DOMnavigated$: import("@thi.ng/rstream").ISubscription<unknown, NavigationObject | {
     fURL: string;
-    node: HTMLElement | Document;
+    NODE: HTMLElement | Document;
 }>;
