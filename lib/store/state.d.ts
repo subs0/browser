@@ -7,7 +7,7 @@ export declare const $store$: Atom<{
         $$_ROOT: any;
     };
 }>;
-export declare const set$$tate: (path: any, val: any, store?: Atom<{
+export declare const set$$tate: (path?: string[], val?: {}, store?: Atom<{
     _: {
         $$_PATH: any[];
         $$_LOAD: boolean;
