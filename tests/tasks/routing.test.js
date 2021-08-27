@@ -4,6 +4,7 @@ import { EquivMap } from "@thi.ng/associative"
 import { map } from "@thi.ng/transducers"
 
 import {
+    _,
     URL_FULL,
     DOM_NODE,
     CMD_ARGS,
@@ -32,13 +33,13 @@ describe("Tasks: routing", () => {
     test("1: __URL__ROUTE: function router CFG with simple data", async () => {
         const SUBTASK = __URL__ROUTE(router_fn, SET_STATE)
         const before = $store$.deref()
-        expect(before[$$_PATH]).toMatchObject([])
+        expect(before[_][$$_PATH]).toMatchObject([])
         run$.next([{ [CMD_ARGS]: { [URL_FULL]: "logan/was/here", [DOM_NODE]: window } }, SUBTASK])
 
         await new Promise(r => setImmediate(r))
 
         const after = $store$.deref()
-        expect(after[$$_PATH]).toMatchObject(["logan", "was", "here"])
+        expect(after[_][$$_PATH]).toMatchObject(["logan", "was", "here"])
     })
     test("2: __DOM_URL__ROUTE: function router CFG with simple data", async () => {
         const SUBTASK = __DOM_URL__ROUTE(router_fn, SET_STATE)
@@ -49,10 +50,12 @@ describe("Tasks: routing", () => {
 
         const after = $store$.deref()
         expect(after).toMatchObject({
-            $$_PATH: ["exit", "stage"],
-            $$_LOAD: false,
-            $$_VIEW: "({ I }) => am a function",
-            $$_ROOT: null,
+            _: {
+                $$_PATH: ["exit", "stage"],
+                $$_LOAD: false,
+                $$_VIEW: "({ I }) => am a function",
+                $$_ROOT: null,
+            },
             exit: { stage: { here: "worn out places" } },
         })
     })
@@ -71,7 +74,7 @@ describe("Tasks: routing", () => {
         await new Promise(r => setImmediate(r))
 
         const after = $store$.deref()
-        expect(after[$$_PATH]).toMatchObject(["now", "you", "dont"])
+        expect(after[_][$$_PATH]).toMatchObject(["now", "you", "dont"])
     })
     test(`4: __DOM_URL__ROUTE: Object router CFG with \`${RTR_PRFX}\` + \`${RTR_POST}\``, async () => {
         //log$.subscribe(map(x => console.log("log$:", x)))
