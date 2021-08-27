@@ -2,7 +2,7 @@
     "name": "@-0/browser",
     "author": "Logan Powell",
     "license": "MIT",
-    "version": "0.3.34",
+    "version": "0.3.35",
     "description": "Browser helpers for -0 state management, routing and the interaction between",
     "main": "./lib/index.js",
     "type": "module",
@@ -18,7 +18,7 @@
         "pages": "gh-pages -d @-0/browser",
         "docs": "npm run types && npm run jsdoc",
         "patch": "npm version patch && npm publish",
-        "postgit": "git push origin master",
+        "push": "git push origin master",
         "ncu": "ncu -u && npm i && npm audit fix",
         "git": "git add . && git commit -m"
     },
