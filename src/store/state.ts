@@ -7,25 +7,26 @@ import { isPlainObject, isArray } from "@thi.ng/checks"
 import * as API from "@-0/keys"
 
 // Global $store$ Container from [@thi.ng/atom](http://thi.ng/atom)
-//export const $store$ = new Atom(API.$$_DEFAULT)
-export const $store$ = new Atom({
-    [API.$$_LOAD]: true,
-    [API.$$_PATH]: [],
-    [API.$$_VIEW]: null,
-})
+export const $store$ = new Atom(API.$$_DEFAULT)
+//export const $store$ = new Atom({
+//    [API.$$_LOAD]: true,
+//    [API.$$_PATH]: [],
+//    [API.$$_VIEW]: null,
+//})
 
-const prep_key = "console"
+const DETOUR_KEY = "home"
 
 const home_spread_err = `
-You've attempted to swap a non-Object value into store 
+You've attempted to swap a non-Object payload into store 
 at the root path. This would overwrite any other values 
 in the store (which is an object). So, we've taken the 
-liberty of preserving both by placing your value under 
-a '${prep_key}' key at the root. 
+liberty of preserving both by placing your payload under 
+a '${DETOUR_KEY}' key at the root. 
 
-Consider packaging this payload as an Object to enable 
-it to be merged with the root Object and prevent this 
-annoyance in the future.
+If you need to place something at the root of the state, 
+please consider packaging this payload as an Object to 
+enable it to be merged with the root Object and prevent 
+this annoyance in the future.
 `
 /**
  *
@@ -42,11 +43,10 @@ export const set$$tate = (path: string[] = [], val = {}, store = $store$) => {
         // if both swap and target are objects, merge
         // else just reset to val at path (i.e., careful!)
         const both_objects = isPlainObject(x) && isPlainObject(val)
-        const array_to_object = isPlainObject(x) && isArray(val)
         if (both_objects) return { ...x, ...val }
-        if (array_to_object && !path.length) {
+        if (!isPlainObject(val) && !path.length) {
             console.warn(home_spread_err)
-            return { ...x, [prep_key]: val }
+            return { ...x, [DETOUR_KEY]: val }
         }
         return val
     })

@@ -1,6 +1,7 @@
 import { createEvent, fireEvent } from "@testing-library/dom"
 import { EquivMap } from "@thi.ng/associative"
 import { map } from "@thi.ng/transducers"
+import { setImmediate } from "timers"
 
 import {
     URL_FULL,
@@ -21,7 +22,8 @@ import { registerRouterDOM } from "../../src/registers"
 
 //const warned = (x = jest.fn()) => (jest.spyOn(console, "warn").mockImplementation(x), x)
 
-describe("registerRouterDOM", () => {
+const warned = jest.spyOn(console, "warn").mockImplementation()
+describe("registerRouterDOM && Warnings due to root value of router output", () => {
     const router_fn = url => ({ [URL_DATA]: true, [URL_PAGE]: 1 })
     registerRouterDOM(router_fn)
     const spy = jest.fn(x => x)
@@ -39,11 +41,16 @@ describe("registerRouterDOM", () => {
 
     //const missing_props = warned()
 
-    test("1: 'popstate' events trigger `_NAVIGATE` Command (routing)", () => {
+    test("1: 'popstate' events trigger `_NAVIGATE` Command (routing).", async () => {
         fireEvent(window, createEvent("popstate", window))
         const result = spy.mock.results[0].value
         const sub$ = result[CMD_SUB$]
         const url = result[CMD_ARGS][URL_FULL]
+
+        // wait for task to complete
+        await new Promise(r => setImmediate(r))
+        expect(warned).toHaveBeenCalledTimes(1)
+
         expect(spy.mock.calls.length).toBe(1)
         expect({ [CMD_SUB$]: sub$, [URL_FULL]: url }).toMatchObject({
             [CMD_SUB$]: "_NAVIGATE",
@@ -51,11 +58,16 @@ describe("registerRouterDOM", () => {
         })
     })
 
-    test("2: 'DOMContentLoaded' events trigger `_NAVIGATE` Command (routing)", () => {
+    test("2: 'DOMContentLoaded' events trigger `_NAVIGATE` Command (routing)", async () => {
         fireEvent(window, createEvent("DOMContentLoaded", window))
         const result = spy.mock.results[1].value
         const sub$ = result[CMD_SUB$]
         const url = result[CMD_ARGS][URL_FULL]
+
+        // wait for task to complete
+        await new Promise(r => setImmediate(r))
+        expect(warned).toHaveBeenCalledTimes(2)
+
         expect(spy.mock.calls.length).toBe(2)
         expect({ [CMD_SUB$]: sub$, [URL_FULL]: url }).toMatchObject({
             [CMD_SUB$]: "_NAVIGATE",

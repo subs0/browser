@@ -12,7 +12,7 @@ import {
 } from "../commands"
 
 import {
-    /* _,*/
+    _,
     $$_VIEW,
     $$_LOAD,
     $$_PATH,
@@ -95,7 +95,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
         ...SET_STATE,
         [CMD_ARGS]: _acc => ({
             [STATE_DATA]: _acc[URL_PATH],
-            [STATE_PATH]: [/* _,*/ $$_PATH],
+            [STATE_PATH]: [_, $$_PATH],
         }),
     }
     /**
@@ -154,11 +154,11 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
 
     const _SET_ROUTE_LOADING_TRUE = {
         ...SET_STATE,
-        [CMD_ARGS]: { [STATE_PATH]: [/* _,*/ $$_LOAD], [STATE_DATA]: true },
+        [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: true },
     }
     const _SET_ROUTE_LOADING_FALSE = {
         ...SET_STATE,
-        [CMD_ARGS]: { [STATE_PATH]: [/* _,*/ $$_LOAD], [STATE_DATA]: false },
+        [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
 
     const ROUTE_HOT = (ACC): Task => [
@@ -172,7 +172,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
             // set page component/function
             ...SET_STATE,
             [CMD_ARGS]: acc => ({
-                [STATE_PATH]: [/* _,*/ $$_VIEW],
+                [STATE_PATH]: [_, $$_VIEW],
                 [STATE_DATA]: acc[URL_PAGE] || (console.log(`no \`${URL_PAGE}\` found for this route`), null),
             }),
         },
