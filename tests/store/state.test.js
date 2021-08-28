@@ -8,23 +8,23 @@ describe("state", () => {
             //[$$_CMDS] : {},
             [$$_LOAD]: true,
             [$$_PATH]: [],
-            [$$_ROOT]: null,
+            //[$$_ROOT]: null,
             [$$_VIEW]: null,
-        }).toMatchObject($store$.deref()[_])
+        }).toMatchObject($store$.deref() /*[_]*/)
     })
     test(`2: $store$: setting $store$ via .resetIn`, () => {
         // before
-        expect($store$.deref()[_][$$_LOAD]).toBe(true)
-        $store$.resetIn([_, $$_LOAD], false)
+        expect($store$.deref() /*[_]*/[$$_LOAD]).toBe(true)
+        $store$.resetIn([/*_,*/ $$_LOAD], false)
         // after
-        expect($store$.deref()[_][$$_LOAD]).toBe(false)
+        expect($store$.deref() /*[_]*/[$$_LOAD]).toBe(false)
     })
     test(`3: set$$tate: path = [] (empty -> root), data = Primitive`, () => {
-        expect($store$.deref()[_][$$_VIEW]).toBe(null)
+        expect($store$.deref() /*[_]*/[$$_VIEW]).toBe(null)
         // before
         const view_component = x => `<a href=${x}>${x}</a>`
-        set$$tate([_, $$_VIEW], view_component)
+        set$$tate([/*_,*/ $$_VIEW], view_component)
         // after
-        expect($store$.deref()[_][$$_VIEW]).toBeInstanceOf(Function)
+        expect($store$.deref() /*[_]*/[$$_VIEW]).toBeInstanceOf(Function)
     })
 })

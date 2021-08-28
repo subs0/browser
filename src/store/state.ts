@@ -4,22 +4,28 @@
 
 import { Atom } from "@thi.ng/atom"
 import { isPlainObject, isArray } from "@thi.ng/checks"
-import { $$_DEFAULT, DefaultDraft } from "@-0/keys"
+import * as API from "@-0/keys"
 
 // Global $store$ Container from [@thi.ng/atom](http://thi.ng/atom)
-export const $store$ = new Atom($$_DEFAULT)
+//export const $store$ = new Atom(API.$$_DEFAULT)
+export const $store$ = new Atom({
+    [API.$$_LOAD]: true,
+    [API.$$_PATH]: [],
+    [API.$$_VIEW]: null,
+})
 
-const prep_key = "see-console"
+const prep_key = "console"
 
 const home_spread_err = `
-You've attempted to swap Array values into store at 
-the root path. This would overwrite any other values 
-in the store (which is an object). So, we've taken 
-the liberty of preserving both by placing this Array 
-under a '${prep_key}' key at the root. 
+You've attempted to swap a non-Object value into store 
+at the root path. This would overwrite any other values 
+in the store (which is an object). So, we've taken the 
+liberty of preserving both by placing your value under 
+a '${prep_key}' key at the root. 
 
-Consider packaging this payload as an Object to 
-prevent this annoyance.
+Consider packaging this payload as an Object to enable 
+it to be merged with the root Object and prevent this 
+annoyance in the future.
 `
 /**
  *
@@ -39,7 +45,7 @@ export const set$$tate = (path: string[] = [], val = {}, store = $store$) => {
         const array_to_object = isPlainObject(x) && isArray(val)
         if (both_objects) return { ...x, ...val }
         if (array_to_object && !path.length) {
-            console.log(home_spread_err)
+            console.warn(home_spread_err)
             return { ...x, [prep_key]: val }
         }
         return val
