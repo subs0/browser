@@ -1,4 +1,4 @@
-import { stream } from "@thi.ng/rstream"
+//import { stream } from "@thi.ng/rstream"
 import { Atom } from "@thi.ng/atom"
 import { out$ } from "@-0/spool"
 import { createSetStateCMD, SET_STATE } from "../../src/commands"

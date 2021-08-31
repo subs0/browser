@@ -9,7 +9,7 @@ describe("state", () => {
             [$$_LOAD]: true,
             [$$_PATH]: [],
             [$$_ROOT]: null,
-            [$$_VIEW]: null,
+            //[$$_VIEW]: null,
         }).toMatchObject($store$.deref()[_])
     })
     test(`2: $store$: setting $store$ via .resetIn`, () => {

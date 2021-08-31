@@ -8,25 +8,18 @@ import * as API from "@-0/keys"
 
 // Global $store$ Container from [@thi.ng/atom](http://thi.ng/atom)
 export const $store$ = new Atom(API.$$_DEFAULT)
-//export const $store$ = new Atom({
-//    [API.$$_LOAD]: true,
-//    [API.$$_PATH]: [],
-//    [API.$$_VIEW]: null,
-//})
-
-const DETOUR_KEY = "home"
 
 const home_spread_err = `
-You've attempted to swap a non-Object payload into store 
+You've attempted to set a non-Object payload to the store 
 at the root path. This would overwrite any other values 
 in the store (which is an object). So, we've taken the 
 liberty of preserving both by placing your payload under 
-a '${DETOUR_KEY}' key at the root. 
+the '${API.DETOUR}' key at the root. 
 
-If you need to place something at the root of the state, 
+If you need to place something at the root of the store, 
 please consider packaging this payload as an Object to 
-enable it to be merged with the root Object and prevent 
-this annoyance in the future.
+enable it to be merged (using { ...store, ...yours }) with 
+the root Object and prevent this annoyance in the future.
 `
 /**
  *
@@ -46,7 +39,7 @@ export const set$$tate = (path: string[] = [], val = {}, store = $store$) => {
         if (both_objects) return { ...x, ...val }
         if (!isPlainObject(val) && !path.length) {
             console.warn(home_spread_err)
-            return { ...x, [DETOUR_KEY]: val }
+            return { ...x, [API.DETOUR]: val }
         }
         return val
     })
