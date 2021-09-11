@@ -89,7 +89,7 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
 })
 
 /**
- * Routing Command: DOM-specific (internal to /browser only)
+ * Routing Command: DOM-spehttps://github.com/loganpowell/anotherstory.gitcific (internal to /browser only)
  *
  * - Payload: function
  * - Handler: side-effecting
@@ -120,8 +120,12 @@ export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
             [URL_FULL]: url,
             [DOM_NODE]: node,
         }
-        if (url && node && !node.document) return history.pushState(URL2obj(url), document.title, url)
-        if (!url || !node) return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
+        if (url && node && !node.document) {
+            return history.pushState(URL2obj(url), document.title, url)
+        }
+        if (!url || !node) {
+            return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
+        }
     },
 })
 

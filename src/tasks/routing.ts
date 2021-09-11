@@ -50,6 +50,21 @@ import { out$ } from "@-0/spool"
 const route_error = (_acc, _err, _out) => console.warn("Error in URL__ROUTE:", _err)
 const e_s = `Prerequisite property: { ${CMD_ARGS}: { ${URL_FULL}: NOT FOUND 🔥 } }`
 
+const router_opts = (CFG: Router | RouterCFG) => {
+    const rtr = CFG[CFG_RUTR] || null
+    const pre = CFG[RTR_PREP] || null
+    const pst = CFG[RTR_POST] || null
+    const pfx = CFG[RTR_PRFX] || null
+    const escRGX = /[-/\\^$*+?.()|[\]{}]/g
+    const escaped = string => string.replace(escRGX, "\\$&")
+
+    const RUTR = rtr || CFG
+    const _PREP = (pre && isPlainObject(pre) ? [pre] : pre) || []
+    const _POST = (pst && isPlainObject(pst) ? [pst] : pst) || []
+    const prefix = pfx ? new RegExp(escaped(pfx), "g") : null
+
+    return { RUTR, _PREP, _POST, prefix }
+}
 /**
  *
  * Universal router (cross-platform) Subtask.
@@ -78,17 +93,7 @@ const e_s = `Prerequisite property: { ${CMD_ARGS}: { ${URL_FULL}: NOT FOUND 🔥
  *
  */
 export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const rtr = CFG[CFG_RUTR] || null
-    const pre = CFG[RTR_PREP] || null
-    const pst = CFG[RTR_POST] || null
-    const pfx = CFG[RTR_PRFX] || null
-    const escRGX = /[-/\\^$*+?.()|[\]{}]/g
-    const escaped = string => string.replace(escRGX, "\\$&")
-
-    const RUTR = rtr || CFG
-    const _PREP = (pre && isPlainObject(pre) ? [pre] : pre) || []
-    const _POST = (pst && isPlainObject(pst) ? [pst] : pst) || []
-    const prefix = pfx ? new RegExp(escaped(pfx), "g") : null
+    const { RUTR, _POST, _PREP, prefix } = router_opts(CFG)
 
     //console.log({ SET_STATE, topics: out$.topics.entries() })
     const _SET_ROUTE_PATH = {
@@ -149,8 +154,16 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
  * ```
  */
 export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
+    const { RUTR, _POST, _PREP } = router_opts(CFG)
+
     // instantiate router
-    const UNIVERSAL_ROUTING_SUBTASK = __URL__ROUTE(CFG, SET_STATE)
+    const UNIVERSAL_ROUTING_SUBTASK = __URL__ROUTE(
+        {
+            [CFG_RUTR]: RUTR,
+            [RTR_PRFX]: CFG[RTR_PRFX] || null,
+        },
+        SET_STATE
+    )
 
     const _SET_ROUTE_LOADING_TRUE = {
         ...SET_STATE,
@@ -162,6 +175,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
     }
 
     const ROUTE_HOT = (ACC): Task => [
+        ..._PREP,
         _SET_ROUTE_LOADING_TRUE,
         {
             ..._HREF_PUSHSTATE_DOM,
@@ -194,6 +208,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
         _NOTIFY_PRERENDER_DOM,
+        ..._POST,
     ]
 
     return ROUTE_HOT
