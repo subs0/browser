@@ -13,6 +13,7 @@ import {
     Command,
     SCROLL_Y,
     SCROLL_X,
+    PUSH_STATE,
 } from "@-0/keys"
 import { DOMnavigated$ } from "../core/stream$"
 import { registerCMD } from "@-0/spool"
@@ -136,12 +137,14 @@ export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
     [CMD_WORK]: acc => {
         const url = acc[URL_FULL]
         const node = acc[DOM_NODE]
+        const state = acc[PUSH_STATE]
         const props = {
             [URL_FULL]: url,
             [DOM_NODE]: node,
+            [PUSH_STATE]: state,
         }
         if (url && node && !node.document) {
-            return history.pushState(getScrollPos(), document.title, url)
+            return history.pushState(state, document.title, url)
         }
         if (!url || !node) {
             return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
