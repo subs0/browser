@@ -188,13 +188,13 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
     const ROUTE_HOT = (props): Task => [
-        _SET_ROUTE_LOADING_TRUE,
-        ..._PREP,
         { [CMD_ARGS]: props }, // Seed accumulator
-        {
-            ..._HREF_PUSHSTATE_DOM,
-            [CMD_ARGS]: acc => acc,
-        },
+        //{ // push state of exiting page???
+        //    ..._HREF_PUSHSTATE_DOM,
+        //    [CMD_ARGS]: acc => acc,
+        //},
+        ..._PREP,
+        _SET_ROUTE_LOADING_TRUE,
         props => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: props[URL_FULL] }),
         // 📌  preserve HOT Acstcumulator Values (e.g., PUSH_STATE)
         { [CMD_ARGS]: acc => ({ ...props, ...acc }) },
