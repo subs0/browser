@@ -41,6 +41,7 @@ import {
     Command,
     CMD_SUB$,
     ICommandObject,
+    PUSH_STATE,
 } from "@-0/keys"
 
 import { URL2obj } from "@-0/utils"
@@ -116,7 +117,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
         ..._PREP,
         {
             // 📌 🤔: consider how to handle stage flag URL prefix (e.g., /staging, from AWS)
-            [CMD_ARGS]: ACC[URL_FULL] ? { ...ACC, ...RUTR(ACC[URL_FULL].replace(prefix, "")) } : new Error(e_s),
+            [CMD_ARGS]: ACC[URL_FULL] ? RUTR(ACC[URL_FULL].replace(prefix, "")) : new Error(e_s),
             [CMD_RESO]: (_acc, _res: RouterOutput) => ({
                 // no page when used server-side...
                 ...(_res && _res[URL_PAGE] && { [URL_PAGE]: _res[URL_PAGE] }),
@@ -125,7 +126,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
             [CMD_ERRO]: route_error,
         },
         {
-            [CMD_ARGS]: ACC[URL_FULL] ? { ...ACC, ...URL2obj(ACC[URL_FULL], prefix) } : new Error(e_s),
+            [CMD_ARGS]: ACC[URL_FULL] ? URL2obj(ACC[URL_FULL], prefix) : new Error(e_s),
             [CMD_ERRO]: route_error,
         },
         _SET_ROUTE_PATH,
@@ -182,12 +183,14 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
             [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE] },
         },
         ACC => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: ACC[URL_FULL] }),
+        // preserve HOT Accumulator Values (e.g., PUSH_STATE)
+        { [CMD_ARGS]: acc => ({ ...ACC, ...acc }) },
         {
             // set page component/function
             ...SET_STATE,
             [CMD_ARGS]: acc => ({
                 [STATE_PATH]: [_, $$_VIEW],
-                [STATE_DATA]: acc[URL_PAGE] || (console.log(`no \`${URL_PAGE}\` found for this route`), null),
+                [STATE_DATA]: acc[URL_PAGE] || (console.error(`no \`${URL_PAGE}\` found for this route`), null),
             }),
         },
         {
@@ -198,7 +201,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
                 [STATE_DATA]:
                     (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
                     acc[URL_DATA] ||
-                    (console.log(
+                    (console.warn(
                         `consider returning a \`${URL_DATA}\` property from your router to isolate the data needed for this route`
                     ),
                     acc) ||
