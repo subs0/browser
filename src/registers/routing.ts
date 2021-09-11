@@ -70,19 +70,21 @@ import { SET_STATE } from "../commands"
  * // => 🎨: navigated to /some/path?and=query
  * ```
  */
+// TODO: keys
+const POP_STATE = "POP_STATE"
 export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command = SET_STATE) => {
     console.log("DOM Router Registered")
     const ROUTE_HOT = __DOM_URL__ROUTE(CFG, setStateCMD)
     const { [CMD_SUB$]: sub$, [CMD_ARGS]: args } = registerCMD({
         [CMD_SRC$]: DOMnavigated$,
         [CMD_SUB$]: "_NAVIGATE",
-        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node, [PUSH_STATE]: state }) => ({
+        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node, [POP_STATE]: state }) => ({
             [URL_FULL]: url,
             [DOM_NODE]: node,
-            [PUSH_STATE]: state,
+            [POP_STATE]: state,
         }),
-        [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node = document, [PUSH_STATE]: state }) => {
-            const props = { [URL_FULL]: url, [DOM_NODE]: node, [PUSH_STATE]: state }
+        [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node = document, [POP_STATE]: state }) => {
+            const props = { [URL_FULL]: url, [DOM_NODE]: node, [POP_STATE]: state }
             if (url) return run$.next(ROUTE_HOT(props))
             console.warn(Err_missing_props("_NAVIGATE (from registerRouterDOM)", props))
         },

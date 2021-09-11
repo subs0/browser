@@ -100,6 +100,11 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
     },
 })
 
+const getScrollPos = () => ({
+    [SCROLL_X]: window.scrollX,
+    [SCROLL_Y]: window.scrollY,
+})
+
 /**
  * Routing Command:
  * DOM-spehttps://github.com/loganpowell/anotherstory.gitcific
@@ -125,26 +130,24 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
  *
  *
  */
-
-const getScrollPos = () => ({
-    [SCROLL_X]: window.scrollX,
-    [SCROLL_Y]: window.scrollY,
-})
-
+// TODO: keys
+const POP_STATE = "POP_STATE"
 export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
     [CMD_SUB$]: "_HREF_PUSHSTATE_DOM",
     [CMD_ARGS]: acc => acc,
     [CMD_WORK]: acc => {
         const url = acc[URL_FULL]
         const node = acc[DOM_NODE]
-        const state = acc[PUSH_STATE]
+        const pop = acc[POP_STATE]
         const props = {
             [URL_FULL]: url,
             [DOM_NODE]: node,
-            [PUSH_STATE]: state,
+            //[POP_STATE]: state,
         }
-        if (url && node && !node.document) {
-            return history.pushState(state, document.title, url)
+        // has reqs and not from window (e.g., popstate)
+        // i.e., from <a href...> click
+        if (url && node && !node.document && !pop) {
+            return history.pushState(getScrollPos(), document.title, url)
         }
         if (!url || !node) {
             return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))

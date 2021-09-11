@@ -174,13 +174,14 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         ...SET_STATE,
         [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
-
+    // TODO: keys
+    const POP_STATE = "POP_STATE"
     const ROUTE_HOT = (ACC): Task => [
         ..._PREP,
         _SET_ROUTE_LOADING_TRUE,
         {
             ..._HREF_PUSHSTATE_DOM,
-            [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE] },
+            [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE], [POP_STATE]: ACC[POP_STATE] },
         },
         ACC => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: ACC[URL_FULL] }),
         // 📌  preserve HOT Accumulator Values (e.g., PUSH_STATE)

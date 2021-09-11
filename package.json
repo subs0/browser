@@ -2,7 +2,7 @@
     "name": "@-0/browser",
     "author": "Logan Powell",
     "license": "MIT",
-    "version": "0.3.50",
+    "version": "0.3.51",
     "description": "Browser helpers for -0 state management, routing and the interaction between",
     "main": "./lib/index.js",
     "type": "module",

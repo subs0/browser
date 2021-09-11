@@ -42,15 +42,19 @@ export type NavigationObject = Partial<{
  * see _HURL in `/commands/routing.js` for ad-hoc stream
  * injection example
  */
+// TODO: keys
+const POP_STATE = "POP_STATE"
 export const DOMnavigated$ = merge({
     src: [popstate$, DOMContentLoaded$],
 }).transform({
     xform: map((e: NavigationObject) => {
+        console.log("DOMnavigated$ state?:", e.state)
         if (e.target.location.href && e.currentTarget) {
             return {
                 [URL_FULL]: e.target.location.href,
                 [DOM_NODE]: e.currentTarget,
-                [PUSH_STATE]: e.state || null,
+                // if triggered by either stream, popstate is used for scroll position
+                [POP_STATE]: e.state || null,
             }
         }
         console.log(
