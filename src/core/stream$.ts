@@ -46,14 +46,15 @@ export const DOMnavigated$ = merge({
     src: [popstate$, DOMContentLoaded$],
 }).transform({
     xform: map((e: NavigationObject) => {
-        //console.log("DOMnavigated$ state?:", e.state)
+        const payload = {
+            [URL_FULL]: e.target.location.href,
+            [DOM_NODE]: e.currentTarget,
+            // if triggered by either stream, popstate is used for scroll position
+            [POP_STATE]: e.state || null,
+        }
+        console.log("DOMnavigated$ event:", payload)
         if (e.target.location.href && e.currentTarget) {
-            return {
-                [URL_FULL]: e.target.location.href,
-                [DOM_NODE]: e.currentTarget,
-                // if triggered by either stream, popstate is used for scroll position
-                [POP_STATE]: e.state || null,
-            }
+            return payload
         }
         console.log(
             "DOMnavigated$ triggered, but missing `x.target.location.href &/ x.currentTarget`",

@@ -27,6 +27,7 @@ import {
     CFG_RUTR,
     CMD_ARGS,
     CMD_RESO,
+    CMD_WORK,
     CMD_ERRO,
     DOM_BODY,
     DOM_HEAD,
@@ -43,11 +44,12 @@ import {
     ICommandObject,
     PUSH_STATE,
     Accumulator,
+    POP_STATE,
 } from "@-0/keys"
 
 import { URL2obj } from "@-0/utils"
 import { $store$ } from "../store"
-import { out$ } from "@-0/spool"
+import { out$, registerCMD } from "@-0/spool"
 
 const route_error = (_acc, _err, _out) => console.warn("Error in URL__ROUTE:", _err)
 const e_s = `Prerequisite property: { ${CMD_ARGS}: { ${URL_FULL}: NOT FOUND 🔥 } }`
@@ -136,6 +138,16 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
     return ROUTE_SUBTASK
 }
 
+const LOG_PROP = (PROP: string) =>
+    registerCMD({
+        [CMD_SUB$]: "_LOG_PROP_" + PROP,
+        // @ts-ignore
+        [CMD_ARGS]: ({ [PROP]: target }) => target,
+        [CMD_WORK]: x => console.log("Logging for _LOG_" + x, x),
+    })
+
+const LOG_POP_STATE = LOG_PROP(POP_STATE)
+const LOG_PUSH_STATE = LOG_PROP(PUSH_STATE)
 /**
  *
  * DOM Router that contains a cross-platform routing Subtask

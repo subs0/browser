@@ -148,7 +148,9 @@ export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
         // has reqs and not from window (e.g., popstate)
         // i.e., from <a href...> click
         if (url && (push || node.href)) {
-            return history.pushState(push || getScrollPos(), document.title, url)
+            const state = getScrollPos()
+            console.log("_HREF_PUSHSTATE_DOM -> pushing state to history:", state)
+            return history.pushState(push || state, document.title, url)
         }
         if (!url || !node) {
             return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
