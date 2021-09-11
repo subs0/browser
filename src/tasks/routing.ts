@@ -184,7 +184,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         },
         ACC => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: ACC[URL_FULL] }),
         // preserve HOT Accumulator Values (e.g., PUSH_STATE)
-        //{ [CMD_ARGS]: acc => ({ ...ACC, ...acc }) },
+        { [CMD_ARGS]: acc => ({ ...ACC, ...acc }) },
         {
             // set page component/function
             ...SET_STATE,
