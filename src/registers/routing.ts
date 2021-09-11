@@ -69,17 +69,22 @@ import { SET_STATE } from "../commands"
  * // => 🎨: navigated to /some/path?and=query
  * ```
  */
+
+// TODO: import from @-0/keys
+const PUSH_STATE = "PUSH_STATE"
+
 export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command = SET_STATE): ICommandObject => {
     console.log("DOM Router Registered")
     const ROUTE_HOT = __DOM_URL__ROUTE(CFG, setStateCMD)
     const { [CMD_SUB$]: sub$, [CMD_ARGS]: args } = registerCMD({
         [CMD_SRC$]: DOMnavigated$,
         [CMD_SUB$]: "_NAVIGATE",
-        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node }) => ({
+        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node, [PUSH_STATE]: state }) => ({
             [URL_FULL]: url,
             [DOM_NODE]: node,
+            [PUSH_STATE]: state,
         }),
-        [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node = document }) => {
+        [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node = document, [PUSH_STATE]: state }) => {
             //const w_href = window.location.href
             //const parsed = URL2obj(w_href)
             //const w_path = `/${parsed[URL_PATH].join("/")}`
@@ -87,7 +92,7 @@ export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command 
             // relative paths
             //console.log({ url, w_href, w_path })
             //if (url === w_href || url === w_path) return
-            const props = { [URL_FULL]: url, [DOM_NODE]: node }
+            const props = { [URL_FULL]: url, [DOM_NODE]: node, [PUSH_STATE]: state }
             if (url) return run$.next(ROUTE_HOT(props))
             console.warn(Err_missing_props("_NAVIGATE (from registerRouterDOM)", props))
         },

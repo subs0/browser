@@ -11,14 +11,15 @@ export const popstate$: ISubscribable<PopStateEvent> = fromDOMEvent(window, "pop
 // @ts-ignore
 export const DOMContentLoaded$: ISubscribable<Event> = fromDOMEvent(window, "DOMContentLoaded")
 
-export type NavigationObject = {
+export type NavigationObject = Partial<{
     target: {
         location: {
             href: string
         }
     }
     currentTarget: HTMLElement | Document
-}
+    state: Record<string, unknown>
+}>
 /**
  *
  * There are three types of navigation we need to handle:
@@ -41,24 +42,28 @@ export type NavigationObject = {
  * see _HURL in `/commands/routing.js` for ad-hoc stream
  * injection example
  */
+// TODO: import from @-0/keys
+const PUSH_STATE = "PUSH_STATE"
+
 export const DOMnavigated$ = merge({
     src: [popstate$, DOMContentLoaded$],
 }).transform({
-    xform: map((x: NavigationObject) => {
-        if (x.target.location.href && x.currentTarget) {
+    xform: map((e: NavigationObject) => {
+        if (e.target.location.href && e.currentTarget) {
             return {
-                [URL_FULL]: x.target.location.href,
-                [DOM_NODE]: x.currentTarget,
+                [URL_FULL]: e.target.location.href,
+                [DOM_NODE]: e.currentTarget,
+                [PUSH_STATE]: e.state || null,
             }
         }
         console.log(
             "DOMnavigated$ triggered, but missing `x.target.location.href &/ x.currentTarget`",
-            JSON.stringify(x, null, 2)
+            JSON.stringify(e, null, 2)
         )
-        return x
+        return e
     }),
-    error: e => {
-        console.warn("DOMnavigated$ ERROR:", e)
+    error: err => {
+        console.warn("DOMnavigated$ ERROR:", err)
         return true
     },
 })

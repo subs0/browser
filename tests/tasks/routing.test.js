@@ -12,6 +12,7 @@ import {
     URL_PAGE,
     URL_PATH,
     $$_LOAD,
+    $$_VIEW,
     $$_PATH,
     CFG_RUTR,
     RTR_POST,
@@ -50,10 +51,10 @@ describe("Tasks: routing", () => {
 
         const after = $store$.deref()
         expect(after).toMatchObject({
-            _: {
-                $$_PATH: ["exit", "stage"],
-                $$_LOAD: false,
-                $$_VIEW: "({ I }) => am a function",
+            [_]: {
+                [$$_PATH]: ["exit", "stage"],
+                [$$_LOAD]: false,
+                [$$_VIEW]: "({ I }) => am a function",
                 //$$_ROOT: null,
             },
             exit: { stage: { here: "worn out places" } },

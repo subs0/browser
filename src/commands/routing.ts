@@ -89,7 +89,9 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
 })
 
 /**
- * Routing Command: DOM-spehttps://github.com/loganpowell/anotherstory.gitcific (internal to /browser only)
+ * Routing Command:
+ * DOM-spehttps://github.com/loganpowell/anotherstory.gitcific
+ * (internal to /browser only)
  *
  * - Payload: function
  * - Handler: side-effecting
@@ -100,16 +102,26 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
  * ```
  * Takes a URL and a DOM reference
  *
- * If the DOM reference is not `window`, uses
- * `history.pushState` to add the URL (plus the
- * parsed URL from `parse_URL(URL)`) to the `history` object
+ * If the DOM reference is not `window` (prevents redundant
+ * history entries from back/forward browser navigation),
+ * uses `history.pushState` to add the URL (plus the parsed
+ * URL from `parse_URL(URL)`) to the `history` object
  *
- * export const DOMnavigated$ = merge({
- *   src: [popstate$, DOMContentLoaded$]
- * }).transform(map(x => ({ URL: x.target.location.href, DOM: x.currentTarget })))
+ * export const DOMnavigated$ = merge({src: [popstate$,
+ * DOMContentLoaded$]}).transform(map(x => ({ URL:
+ * x.target.location.href, DOM: x.currentTarget })))
  *
  *
  */
+// TODO: import from @-0/keys
+const SCROLL_X = "SCROLL_X"
+const SCROLL_Y = "SCROLL_Y"
+
+const getScrollPos = () => ({
+    [SCROLL_X]: window.scrollX,
+    [SCROLL_Y]: window.scrollY,
+})
+
 export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
     [CMD_SUB$]: "_HREF_PUSHSTATE_DOM",
     [CMD_ARGS]: acc => acc,
@@ -121,7 +133,7 @@ export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
             [DOM_NODE]: node,
         }
         if (url && node && !node.document) {
-            return history.pushState(URL2obj(url), document.title, url)
+            return history.pushState(getScrollPos(), document.title, url)
         }
         if (!url || !node) {
             return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
