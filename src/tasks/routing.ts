@@ -42,6 +42,7 @@ import {
     CMD_SUB$,
     ICommandObject,
     PUSH_STATE,
+    Accumulator,
 } from "@-0/keys"
 
 import { URL2obj } from "@-0/utils"
@@ -113,11 +114,11 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
      * 2. create for every emission from
      *      the run$ emission
      */
-    const ROUTE_SUBTASK = (ACC): Task => [
+    const ROUTE_SUBTASK = ({ [URL_FULL]: FURL = "" }): Task => [
         ..._PREP,
         {
             // 📌 🤔: consider how to handle stage flag URL prefix (e.g., /staging, from AWS)
-            [CMD_ARGS]: ACC[URL_FULL] ? RUTR(ACC[URL_FULL].replace(prefix, "")) : new Error(e_s),
+            [CMD_ARGS]: FURL ? RUTR(FURL.replace(prefix, "")) : new Error(e_s),
             [CMD_RESO]: (_acc, _res: RouterOutput) => ({
                 // no page when used server-side...
                 ...(_res && _res[URL_PAGE] && { [URL_PAGE]: _res[URL_PAGE] }),
@@ -126,7 +127,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
             [CMD_ERRO]: route_error,
         },
         {
-            [CMD_ARGS]: ACC[URL_FULL] ? URL2obj(ACC[URL_FULL], prefix) : new Error(e_s),
+            [CMD_ARGS]: FURL ? URL2obj(FURL, prefix) : new Error(e_s),
             [CMD_ERRO]: route_error,
         },
         _SET_ROUTE_PATH,
@@ -175,9 +176,13 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
     const ROUTE_HOT = (props): Task => [
-        ..._PREP,
         _SET_ROUTE_LOADING_TRUE,
+        ..._PREP,
         { [CMD_ARGS]: props }, // Seed accumulator
+        {
+            ..._HREF_PUSHSTATE_DOM,
+            [CMD_ARGS]: acc => acc,
+        },
         props => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: props[URL_FULL] }),
         // 📌  preserve HOT Acstcumulator Values (e.g., PUSH_STATE)
         { [CMD_ARGS]: acc => ({ ...props, ...acc }) },
@@ -203,10 +208,6 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
                     acc) ||
                     null,
             }),
-        },
-        {
-            ..._HREF_PUSHSTATE_DOM,
-            [CMD_ARGS]: acc => acc,
         },
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,

@@ -13,6 +13,7 @@ import {
     Command,
     SCROLL_Y,
     SCROLL_X,
+    POP_STATE,
     PUSH_STATE,
 } from "@-0/keys"
 import { DOMnavigated$ } from "../core/stream$"
@@ -119,10 +120,11 @@ const getScrollPos = () => ({
  * ```
  * Takes a URL and a DOM reference
  *
- * If the DOM reference is not `window` (prevents redundant
- * history entries from back/forward browser navigation),
- * uses `history.pushState` to add the URL (plus the parsed
- * URL from `parse_URL(URL)`) to the `history` object
+ * If the DOM reference is not `window` -> !node.document ->
+ * (prevents redundant history entries from back/forward
+ * browser navigation), uses `history.pushState` to add the
+ * URL (plus the parsed URL from `parse_URL(URL)`) to the
+ * `history` object
  *
  * export const DOMnavigated$ = merge({src: [popstate$,
  * DOMContentLoaded$]}).transform(map(x => ({ URL:
@@ -130,24 +132,23 @@ const getScrollPos = () => ({
  *
  *
  */
-// TODO: keys
-const POP_STATE = "POP_STATE"
 export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
     [CMD_SUB$]: "_HREF_PUSHSTATE_DOM",
     [CMD_ARGS]: acc => acc,
     [CMD_WORK]: acc => {
         const url = acc[URL_FULL]
         const node = acc[DOM_NODE]
-        const pop = acc[POP_STATE]
+        //const pop = acc[POP_STATE]
+        const push = acc[PUSH_STATE]
         const props = {
             [URL_FULL]: url,
             [DOM_NODE]: node,
-            //[POP_STATE]: state,
+            [PUSH_STATE]: push,
         }
         // has reqs and not from window (e.g., popstate)
         // i.e., from <a href...> click
-        if (url && node && !node.document && !pop) {
-            return history.pushState(getScrollPos(), document.title, url)
+        if (url && (push || node.href)) {
+            return history.pushState(push || getScrollPos(), document.title, url)
         }
         if (!url || !node) {
             return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))

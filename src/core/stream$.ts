@@ -5,7 +5,7 @@
 import { fromDOMEvent, merge, ISubscribable, ISubscriber } from "@thi.ng/rstream"
 import { map } from "@thi.ng/transducers"
 
-import { URL_FULL, DOM_NODE, PUSH_STATE } from "@-0/keys"
+import { URL_FULL, DOM_NODE, POP_STATE } from "@-0/keys"
 // @ts-ignore
 export const popstate$: ISubscribable<PopStateEvent> = fromDOMEvent(window, "popstate")
 // @ts-ignore
@@ -42,8 +42,6 @@ export type NavigationObject = Partial<{
  * see _HURL in `/commands/routing.js` for ad-hoc stream
  * injection example
  */
-// TODO: keys
-const POP_STATE = "POP_STATE"
 export const DOMnavigated$ = merge({
     src: [popstate$, DOMContentLoaded$],
 }).transform({
