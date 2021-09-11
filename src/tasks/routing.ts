@@ -179,10 +179,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
     const ROUTE_HOT = (ACC): Task => [
         ..._PREP,
         _SET_ROUTE_LOADING_TRUE,
-        {
-            ..._HREF_PUSHSTATE_DOM,
-            [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE], [POP_STATE]: ACC[POP_STATE] },
-        },
+
         ACC => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: ACC[URL_FULL] }),
         // 📌  preserve HOT Accumulator Values (e.g., PUSH_STATE)
         { [CMD_ARGS]: acc => ({ ...ACC, ...acc }) },
@@ -208,6 +205,10 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
                     acc) ||
                     null,
             }),
+        },
+        {
+            ..._HREF_PUSHSTATE_DOM,
+            [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE], [POP_STATE]: ACC[POP_STATE] },
         },
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
