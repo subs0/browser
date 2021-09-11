@@ -116,7 +116,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
         ..._PREP,
         {
             // 📌 🤔: consider how to handle stage flag URL prefix (e.g., /staging, from AWS)
-            [CMD_ARGS]: ACC[URL_FULL] ? RUTR(ACC[URL_FULL].replace(prefix, "")) : new Error(e_s),
+            [CMD_ARGS]: ACC[URL_FULL] ? { ...ACC, ...RUTR(ACC[URL_FULL].replace(prefix, "")) } : new Error(e_s),
             [CMD_RESO]: (_acc, _res: RouterOutput) => ({
                 // no page when used server-side...
                 ...(_res && _res[URL_PAGE] && { [URL_PAGE]: _res[URL_PAGE] }),
