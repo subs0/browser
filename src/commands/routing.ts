@@ -140,7 +140,7 @@ export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
             [URL_FULL]: url,
             [DOM_NODE]: node,
         }
-        if (url && node) {
+        if (url && node && !node.document) {
             return history.pushState(getScrollPos(), document.title, url)
         }
         if (!url || !node) {
