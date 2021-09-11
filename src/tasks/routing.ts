@@ -174,15 +174,13 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         ...SET_STATE,
         [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
-    // TODO: keys
-    const POP_STATE = "POP_STATE"
-    const ROUTE_HOT = (ACC): Task => [
+    const ROUTE_HOT = (props): Task => [
         ..._PREP,
         _SET_ROUTE_LOADING_TRUE,
-
-        ACC => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: ACC[URL_FULL] }),
-        // 📌  preserve HOT Accumulator Values (e.g., PUSH_STATE)
-        { [CMD_ARGS]: acc => ({ ...ACC, ...acc }) },
+        { [CMD_ARGS]: props }, // Seed accumulator
+        props => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: props[URL_FULL] }),
+        // 📌  preserve HOT Acstcumulator Values (e.g., PUSH_STATE)
+        { [CMD_ARGS]: acc => ({ ...props, ...acc }) },
         {
             // set page component/function
             ...SET_STATE,
@@ -208,7 +206,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         },
         {
             ..._HREF_PUSHSTATE_DOM,
-            [CMD_ARGS]: { [URL_FULL]: ACC[URL_FULL], [DOM_NODE]: ACC[DOM_NODE], [POP_STATE]: ACC[POP_STATE] },
+            [CMD_ARGS]: acc => acc,
         },
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,

@@ -48,7 +48,7 @@ export const DOMnavigated$ = merge({
     src: [popstate$, DOMContentLoaded$],
 }).transform({
     xform: map((e: NavigationObject) => {
-        console.log("DOMnavigated$ state?:", e.state)
+        //console.log("DOMnavigated$ state?:", e.state)
         if (e.target.location.href && e.currentTarget) {
             return {
                 [URL_FULL]: e.target.location.href,
