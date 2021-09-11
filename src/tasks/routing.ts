@@ -125,7 +125,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
             [CMD_ERRO]: route_error,
         },
         {
-            [CMD_ARGS]: ACC[URL_FULL] ? URL2obj(ACC[URL_FULL], prefix) : new Error(e_s),
+            [CMD_ARGS]: ACC[URL_FULL] ? { ...ACC, ...URL2obj(ACC[URL_FULL], prefix) } : new Error(e_s),
             [CMD_ERRO]: route_error,
         },
         _SET_ROUTE_PATH,

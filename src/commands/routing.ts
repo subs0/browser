@@ -2,7 +2,18 @@
  * @module commands/routing
  */
 import { URL2obj, Err_missing_props } from "@-0/utils"
-import { DOM_NODE, URL_FULL, URL_PATH, CMD_SUB$, CMD_ARGS, CMD_WORK, ICommand, Command } from "@-0/keys"
+import {
+    DOM_NODE,
+    URL_FULL,
+    URL_PATH,
+    CMD_SUB$,
+    CMD_ARGS,
+    CMD_WORK,
+    ICommand,
+    Command,
+    SCROLL_Y,
+    SCROLL_X,
+} from "@-0/keys"
 import { DOMnavigated$ } from "../core/stream$"
 import { registerCMD } from "@-0/spool"
 
@@ -113,9 +124,6 @@ export const _SET_LINK_ATTRS_DOM: Command = registerCMD({
  *
  *
  */
-// TODO: import from @-0/keys
-const SCROLL_X = "SCROLL_X"
-const SCROLL_Y = "SCROLL_Y"
 
 const getScrollPos = () => ({
     [SCROLL_X]: window.scrollX,
