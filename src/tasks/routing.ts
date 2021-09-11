@@ -138,16 +138,16 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
     return ROUTE_SUBTASK
 }
 
-const LOG_PROP = (PROP: string) =>
-    registerCMD({
-        [CMD_SUB$]: "_LOG_PROP_" + PROP,
-        // @ts-ignore
-        [CMD_ARGS]: ({ [PROP]: target }) => target,
-        [CMD_WORK]: x => console.log("Logging for _LOG_" + x, x),
-    })
+//const LOG_PROP = (PROP: string) =>
+//    registerCMD({
+//        [CMD_SUB$]: "_LOG_PROP_" + PROP,
+//        // @ts-ignore
+//        [CMD_ARGS]: ({ [PROP]: target }) => target,
+//        [CMD_WORK]: x => console.log("Logging for _LOG_" + x, x),
+//    })
 
-const LOG_POP_STATE = LOG_PROP(POP_STATE)
-const LOG_PUSH_STATE = LOG_PROP(PUSH_STATE)
+//const LOG_POP_STATE = LOG_PROP(POP_STATE)
+//const LOG_PUSH_STATE = LOG_PROP(PUSH_STATE)
 /**
  *
  * DOM Router that contains a cross-platform routing Subtask
