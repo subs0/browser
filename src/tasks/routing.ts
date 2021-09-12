@@ -64,11 +64,11 @@ const router_opts = (CFG: Router | RouterCFG) => {
     const escaped = string => string.replace(escRGX, "\\$&")
 
     const RUTR = rtr || CFG
-    const _PREP = (pre && isPlainObject(pre) ? [pre] : pre) || []
-    const _POST = (pst && isPlainObject(pst) ? [pst] : pst) || []
+    const PREP = (pre && isPlainObject(pre) ? [pre] : pre) || []
+    const POST = (pst && isPlainObject(pst) ? [pst] : pst) || []
     const prefix = pfx ? new RegExp(escaped(pfx), "g") : null
 
-    return { RUTR, _PREP, _POST, prefix }
+    return { RUTR, PREP, POST, prefix }
 }
 /**
  *
@@ -98,7 +98,7 @@ const router_opts = (CFG: Router | RouterCFG) => {
  *
  */
 export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const { RUTR, _POST, _PREP, prefix } = router_opts(CFG)
+    const { RUTR, POST, PREP, prefix } = router_opts(CFG)
 
     //console.log({ SET_STATE, topics: out$.topics.entries() })
     const _SET_ROUTE_PATH = {
@@ -118,7 +118,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
      *      the run$ emission
      */
     const ROUTE_SUBTASK = ({ [URL_FULL]: FURL = "" }): Task => [
-        ..._PREP,
+        ...PREP,
         {
             // 📌 🤔: consider how to handle stage flag URL prefix (e.g., /staging, from AWS)
             [CMD_ARGS]: FURL ? RUTR(FURL.replace(prefix, "")) : new Error(e_s),
@@ -134,7 +134,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
             [CMD_ERRO]: route_error,
         },
         _SET_ROUTE_PATH,
-        ..._POST,
+        ...POST,
     ]
     return ROUTE_SUBTASK
 }
@@ -169,7 +169,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
  * ```
  */
 export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const { RUTR, _POST, _PREP } = router_opts(CFG)
+    const { RUTR, POST, PREP } = router_opts(CFG)
 
     // instantiate router
     const UNIVERSAL_ROUTING_SUBTASK = __URL__ROUTE(
@@ -188,46 +188,44 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         ...SET_STATE,
         [CMD_ARGS]: { [STATE_PATH]: [_, $$_LOAD], [STATE_DATA]: false },
     }
-    const ROUTE_HOT = (props): Task => [
-        { [CMD_ARGS]: props }, // Seed accumulator
-        //{ // push state of exiting page???
-        //    ..._HREF_PUSHSTATE_DOM,
-        //    [CMD_ARGS]: acc => acc,
-        //},
-        ..._PREP,
-        _PUSHSTATE_IF_HREF,
+
+    const _SET_ROUTE_VIEW_TO_PAGE = {
+        // set page component/function
+        ...SET_STATE,
+        [CMD_ARGS]: acc => ({
+            [STATE_PATH]: [_, $$_VIEW],
+            [STATE_DATA]: acc[URL_PAGE] || (console.error(`no \`${URL_PAGE}\` found for this route`), null),
+        }),
+    }
+    const _SET_PATH_STATE_DATA = {
+        // hydrate page state
+        ...SET_STATE,
+        [CMD_ARGS]: acc => ({
+            [STATE_PATH]: acc[URL_PATH],
+            [STATE_DATA]:
+                (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
+                acc[URL_DATA] ||
+                (console.warn(
+                    `consider returning a \`${URL_DATA}\` property from your router to isolate the data needed for this route`
+                ),
+                acc) ||
+                null,
+        }),
+    }
+
+    const ROUTE_HOT = (args): Task => [
+        { [CMD_ARGS]: args }, // Seed accumulator
         _SET_ROUTE_LOADING_TRUE,
-        props => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: props[URL_FULL] }),
-        // 📌  preserve HOT Acstcumulator Values (e.g., PUSH_STATE)
-        { [CMD_ARGS]: acc => ({ ...props, ...acc }) },
-        {
-            // set page component/function
-            ...SET_STATE,
-            [CMD_ARGS]: acc => ({
-                [STATE_PATH]: [_, $$_VIEW],
-                [STATE_DATA]: acc[URL_PAGE] || (console.error(`no \`${URL_PAGE}\` found for this route`), null),
-            }),
-        },
-        {
-            // hydrate page state
-            ...SET_STATE,
-            [CMD_ARGS]: acc => ({
-                [STATE_PATH]: acc[URL_PATH],
-                [STATE_DATA]:
-                    (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
-                    acc[URL_DATA] ||
-                    (console.warn(
-                        `consider returning a \`${URL_DATA}\` property from your router to isolate the data needed for this route`
-                    ),
-                    acc) ||
-                    null,
-            }),
-        },
+        ...PREP,
+        _PUSHSTATE_IF_HREF,
+        args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
+        _SET_ROUTE_VIEW_TO_PAGE,
+        _SET_PATH_STATE_DATA,
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
         _RESTORE_SCROLL,
-        ..._POST,
         _NOTIFY_PRERENDER_DOM,
+        ...POST,
     ]
 
     return ROUTE_HOT
