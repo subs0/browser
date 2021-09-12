@@ -20,7 +20,7 @@ export declare const _PUSHSTATE_IF_HREF: Partial<{
     reso?: undefined;
     erro?: undefined;
 };
-export declare const _RESTORE_SCROLL: Partial<{
+export declare const _RESTORE_SCROLL_IF_POPSTATE: Partial<{
     work: (args: any) => any;
     src$: import("@thi.ng/rstream").ISubscriber<any> | import("@thi.ng/rstream").ISubscribable<any>;
     args: any;

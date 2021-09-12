@@ -148,7 +148,7 @@ export const _PUSHSTATE_IF_HREF = registerCMD({
             const href = window.location.href
             //console.log("setting scrollodex for:", href, "to", state)
             scrollodex.set(href, state)
-            return window.history.pushState({ click_referral: window.location.href }, document.title, url)
+            return window.history.pushState({ [PUSH_STATE]: window.location.href }, document.title, url)
         }
     },
 })
@@ -164,7 +164,7 @@ if ("scrollRestoration" in window.history) {
  *
  * TODO: test
  */
-export const _RESTORE_SCROLL = registerCMD({
+export const _RESTORE_SCROLL_IF_POPSTATE = registerCMD({
     [CMD_SUB$]: "_RESTORE_SCROLL",
     [CMD_ARGS]: ({ [POP_STATE]: pop, [URL_FULL]: url }) => ({
         [POP_STATE]: pop,

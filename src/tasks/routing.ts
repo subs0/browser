@@ -6,7 +6,7 @@ import { isPlainObject } from "@thi.ng/checks"
 
 import {
     _PUSHSTATE_IF_HREF,
-    _RESTORE_SCROLL,
+    _RESTORE_SCROLL_IF_POPSTATE,
     //SET_STATE,
     _NOTIFY_PRERENDER_DOM,
     _SET_LINK_ATTRS_DOM,
@@ -63,12 +63,12 @@ const router_opts = (CFG: Router | RouterCFG) => {
     const escRGX = /[-/\\^$*+?.()|[\]{}]/g
     const escaped = string => string.replace(escRGX, "\\$&")
 
-    const RUTR = rtr || CFG
+    const urlToPageState = rtr || CFG
     const PREP = (pre && isPlainObject(pre) ? [pre] : pre) || []
     const POST = (pst && isPlainObject(pst) ? [pst] : pst) || []
     const prefix = pfx ? new RegExp(escaped(pfx), "g") : null
 
-    return { RUTR, PREP, POST, prefix }
+    return { urlToPageState, PREP, POST, prefix }
 }
 /**
  *
@@ -98,7 +98,7 @@ const router_opts = (CFG: Router | RouterCFG) => {
  *
  */
 export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const { RUTR, POST, PREP, prefix } = router_opts(CFG)
+    const { urlToPageState, POST, PREP, prefix } = router_opts(CFG)
 
     //console.log({ SET_STATE, topics: out$.topics.entries() })
     const _SET_ROUTE_PATH = {
@@ -121,7 +121,7 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
         ...PREP,
         {
             // 📌 🤔: consider how to handle stage flag URL prefix (e.g., /staging, from AWS)
-            [CMD_ARGS]: FURL ? RUTR(FURL.replace(prefix, "")) : new Error(e_s),
+            [CMD_ARGS]: FURL ? urlToPageState(FURL.replace(prefix, "")) : new Error(e_s),
             [CMD_RESO]: (_acc, _res: RouterOutput) => ({
                 // no page when used server-side...
                 ...(_res && _res[URL_PAGE] && { [URL_PAGE]: _res[URL_PAGE] }),
@@ -169,12 +169,12 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
  * ```
  */
 export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const { RUTR, POST, PREP } = router_opts(CFG)
+    const { urlToPageState, POST, PREP } = router_opts(CFG)
 
     // instantiate router
     const UNIVERSAL_ROUTING_SUBTASK = __URL__ROUTE(
         {
-            [CFG_RUTR]: RUTR,
+            [CFG_RUTR]: urlToPageState,
             [RTR_PRFX]: CFG[RTR_PRFX] || null,
         },
         SET_STATE
@@ -214,8 +214,8 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
     }
 
     const ROUTE_HOT = (args): Task => [
-        { [CMD_ARGS]: args }, // Seed accumulator
         _SET_ROUTE_LOADING_TRUE,
+        { [CMD_ARGS]: args }, // Seed accumulator
         ...PREP,
         _PUSHSTATE_IF_HREF,
         args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
@@ -223,7 +223,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         _SET_PATH_STATE_DATA,
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
-        _RESTORE_SCROLL,
+        _RESTORE_SCROLL_IF_POPSTATE,
         _NOTIFY_PRERENDER_DOM,
         ...POST,
     ]

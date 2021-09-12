@@ -5,7 +5,7 @@
 import { fromDOMEvent, merge, ISubscribable, ISubscriber } from "@thi.ng/rstream"
 import { map } from "@thi.ng/transducers"
 
-import { URL_FULL, DOM_NODE, POP_STATE } from "@-0/keys"
+import { URL_FULL, DOM_NODE, POP_STATE, PUSH_STATE } from "@-0/keys"
 // @ts-ignore
 export const popstate$: ISubscribable<PopStateEvent> = fromDOMEvent(window, "popstate")
 // @ts-ignore
@@ -50,7 +50,7 @@ export const DOMnavigated$ = merge({
             [URL_FULL]: e.target.location.href,
             [DOM_NODE]: e.currentTarget,
             // if triggered by either stream, popstate is used for scroll position
-            [POP_STATE]: e.state || null,
+            [POP_STATE]: e.state || { [PUSH_STATE]: document.referrer },
         }
         //console.log("DOMnavigated$ event:", payload)
         if (e.target.location.href && e.currentTarget) {
