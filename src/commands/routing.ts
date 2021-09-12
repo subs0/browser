@@ -153,6 +153,11 @@ export const _PUSHSTATE_IF_HREF = registerCMD({
     },
 })
 
+if ("scrollRestoration" in window.history) {
+    // take control of scroll restoration
+    window.history.scrollRestoration = "manual"
+}
+
 /**
  * Restores scroll position from popstate events (set during
  * `_PUSHSTATE_IF_HREF`)
