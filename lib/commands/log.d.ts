@@ -6,9 +6,14 @@ export declare const LOG_PROP: (PROP: string) => Partial<{
     sub$: string;
     reso: (acc: API.Accumulator, res: any) => any;
     erro: (acc: API.Accumulator, err: Error, out$: import("@thi.ng/rstream").PubSub<unknown, unknown, any>) => any;
-}> | Partial<{
-    args: any;
+}> | {
     sub$: string;
+    args: any;
     reso: (acc: API.Accumulator, res: any) => any;
     erro: (acc: API.Accumulator, err: Error, out$: import("@thi.ng/rstream").PubSub<unknown, unknown, any>) => any;
-}>;
+} | {
+    sub$: string;
+    args: any;
+    reso?: undefined;
+    erro?: undefined;
+};

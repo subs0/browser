@@ -77,15 +77,14 @@ export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command 
     const { [CMD_SUB$]: sub$, [CMD_ARGS]: args } = registerCMD({
         [CMD_SRC$]: DOMnavigated$,
         [CMD_SUB$]: "_NAVIGATE",
-        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node, [POP_STATE]: pop, [PUSH_STATE]: push }) => ({
+        [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node, [POP_STATE]: pop }) => ({
             [URL_FULL]: url,
             [DOM_NODE]: node,
             [POP_STATE]: pop,
-            [PUSH_STATE]: push,
         }),
         [CMD_WORK]: args => {
             const { [URL_FULL]: url } = args
-            console.log("running _NAVIGATE command:", args)
+            //console.log("running _NAVIGATE command:", args)
             if (url) return run$.next(ROUTE_HOT(args))
             console.warn(Err_missing_props("_NAVIGATE (from registerRouterDOM)", { [URL_FULL]: url }))
         },

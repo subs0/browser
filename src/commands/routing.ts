@@ -106,9 +106,11 @@ const getScrollPos = () => ({
     [SCROLL_Y]: window.scrollY,
 })
 
+const scrollodex = new Map()
+
 /**
  * Routing Command:
- * DOM-spehttps://github.com/loganpowell/anotherstory.gitcific
+ * DOM-specific
  * (internal to /browser only)
  *
  * - Payload: function
@@ -132,28 +134,45 @@ const getScrollPos = () => ({
  *
  *
  */
-export const _HREF_PUSHSTATE_DOM: Command = registerCMD({
-    [CMD_SUB$]: "_HREF_PUSHSTATE_DOM",
-    [CMD_ARGS]: acc => acc,
-    [CMD_WORK]: acc => {
-        const url = acc[URL_FULL]
-        const node = acc[DOM_NODE]
-        //const pop = acc[POP_STATE]
-        const push = acc[PUSH_STATE]
-        const props = {
-            [URL_FULL]: url,
-            [DOM_NODE]: node,
-            [PUSH_STATE]: push,
-        }
+export const _PUSHSTATE_IF_HREF = registerCMD({
+    [CMD_SUB$]: "_PUSHSTATE_IF_HREF",
+    [CMD_ARGS]: ({ [URL_FULL]: url, [DOM_NODE]: node }) => ({
+        [URL_FULL]: url,
+        [DOM_NODE]: node,
+    }),
+    [CMD_WORK]: ({ [URL_FULL]: url, [DOM_NODE]: node }) => {
         // has reqs and not from window (e.g., popstate)
         // i.e., from <a href...> click
-        if (url && (push || node.href)) {
+        if (url && node.href) {
             const state = getScrollPos()
-            console.log("_HREF_PUSHSTATE_DOM -> pushing state to history:", state)
-            return history.pushState(push || state, document.title, url)
+            const href = window.location.href
+            //console.log("setting scrollodex for:", href, "to", state)
+            scrollodex.set(href, state)
+            return window.history.pushState({ FROM: window.location.href }, document.title, url)
         }
-        if (!url || !node) {
-            return console.warn(Err_missing_props("_HREF_PUSHSTATE_DOM", props))
+    },
+})
+/**
+ * Restores scroll position from popstate events (set during
+ * `_PUSHSTATE_IF_HREF`)
+ *
+ * TODO: test
+ */
+export const _RESTORE_SCROLL = registerCMD({
+    [CMD_SUB$]: "_RESTORE_SCROLL",
+    [CMD_ARGS]: ({ [POP_STATE]: pop, [URL_FULL]: url }) => ({
+        [POP_STATE]: pop,
+        [URL_FULL]: url,
+    }),
+    [CMD_WORK]: ({ POP_STATE: pop, [URL_FULL]: url }) => {
+        if (pop) {
+            console.log("state popped:", pop)
+            const { [SCROLL_X]: x, [SCROLL_Y]: y } = scrollodex.get(url) || {
+                [SCROLL_X]: 0,
+                [SCROLL_Y]: 0,
+            }
+            //console.log("scrolling to:", { x, y }, node)
+            window.scrollTo(x, y)
         }
     },
 })

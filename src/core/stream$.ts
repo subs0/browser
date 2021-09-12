@@ -52,7 +52,7 @@ export const DOMnavigated$ = merge({
             // if triggered by either stream, popstate is used for scroll position
             [POP_STATE]: e.state || null,
         }
-        console.log("DOMnavigated$ event:", payload)
+        //console.log("DOMnavigated$ event:", payload)
         if (e.target.location.href && e.currentTarget) {
             return payload
         }

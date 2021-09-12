@@ -5,4 +5,4 @@ export { trace } from "@thi.ng/rstream";
 export { URL2obj, obj2URL } from "@-0/utils";
 export { DOMnavigated$ } from "./core";
 export { $store$, set$$tate } from "./store";
-export { SET_STATE, createSetStateCMD, cmd_inject_head, LOG_PROP, _HREF_PUSHSTATE_DOM } from "./commands";
+export { SET_STATE, createSetStateCMD, cmd_inject_head, LOG_PROP } from "./commands";

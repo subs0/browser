@@ -9,7 +9,7 @@ import {
     //cmd_inject_head,
     cmd_nav,
     navEventHandler,
-    _HREF_PUSHSTATE_DOM,
+    _PUSHSTATE_IF_HREF,
     _NOTIFY_PRERENDER_DOM,
     _SET_LINK_ATTRS_DOM,
 } from "../../src/commands"
@@ -84,7 +84,7 @@ describe("Commands: routing", () => {
         expect(a.outerHTML).toBe(`<a href="/hello" visited="" active="">check it</a>`)
         //expect(result).toMatchObject({ [DOM_NODE]: a, [URL_FULL]: "https://hello.world/earth" })
     })
-    test("5: HREF_PUSHSTATE_DOM Command: if DOM ref is <a> -> history.pushState", () => {
+    test("5: _PUSHSTATE_IF_HREF Command: if DOM ref is <a> -> history.pushState", () => {
         const div = document.createElement("div")
         div.innerHTML = `
             <a href="/world" >hello</a>
@@ -93,7 +93,7 @@ describe("Commands: routing", () => {
         a.addEventListener("click", e => {
             //console.log("e.target:", e.target)
             run$.next({
-                ..._HREF_PUSHSTATE_DOM,
+                ..._PUSHSTATE_IF_HREF,
                 [CMD_ARGS]: {
                     [DOM_NODE]: e.target,
                     [URL_FULL]: e.target.href,
