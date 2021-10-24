@@ -10,6 +10,7 @@ import {
     //SET_STATE,
     _NOTIFY_PRERENDER_DOM,
     _SET_LINK_ATTRS_DOM,
+    _SCROLL_TO_HASH,
 } from "../commands"
 
 import {
@@ -225,6 +226,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         _SET_ROUTE_LOADING_FALSE,
         _RESTORE_SCROLL_IF_POPSTATE,
         _NOTIFY_PRERENDER_DOM,
+        _SCROLL_TO_HASH,
         ...POST,
     ]
 
