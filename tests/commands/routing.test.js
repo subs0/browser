@@ -15,9 +15,17 @@ import {
 } from "../../src/commands"
 
 const NAV = registerCMD(cmd_nav)
+
+const spyScrollTo = jest.fn()
+
 //const INJECT_HEAD = registerCMD(cmd_inject_head)
 
 describe("Commands: routing", () => {
+    beforeEach(() => {
+        Object.defineProperty(global.window, "scrollTo", { value: spyScrollTo })
+        Object.defineProperty(global.window, "scrollY", { value: 1 })
+        spyScrollTo.mockClear()
+    })
     test("1: navEventHandler: relative link click triggers DOMnavigated$ injection", () => {
         const spy = jest.fn(x => x)
         DOMnavigated$.subscribe({ next: spy })

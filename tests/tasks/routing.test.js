@@ -1,7 +1,7 @@
-import { createEvent, fireEvent, getByText } from "@testing-library/dom"
+//import { createEvent, fireEvent, getByText } from "@testing-library/dom"
 import { getIn } from "@thi.ng/paths"
-import { EquivMap } from "@thi.ng/associative"
-import { map } from "@thi.ng/transducers"
+//import { EquivMap } from "@thi.ng/associative"
+//import { map } from "@thi.ng/transducers"
 
 import {
     _,
@@ -29,8 +29,14 @@ import { __URL__ROUTE, __DOM_URL__ROUTE } from "../../src/tasks"
 import { setImmediate } from "timers"
 
 const router_fn = url => ({ [URL_DATA]: { here: "worn out places" }, [URL_PAGE]: "({ I }) => am a function" })
+const spyScrollTo = jest.fn()
 
 describe("Tasks: routing", () => {
+    beforeEach(() => {
+        Object.defineProperty(global.window, "scrollTo", { value: spyScrollTo })
+        Object.defineProperty(global.window, "scrollY", { value: 1 })
+        spyScrollTo.mockClear()
+    })
     test("1: __URL__ROUTE: function router CFG with simple data", async () => {
         const SUBTASK = __URL__ROUTE(router_fn, SET_STATE)
         const before = $store$.deref()

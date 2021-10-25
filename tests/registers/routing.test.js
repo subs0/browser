@@ -21,9 +21,14 @@ import { URL2obj } from "@-0/utils"
 import { registerRouterDOM } from "../../src/registers"
 
 //const warned = (x = jest.fn()) => (jest.spyOn(console, "warn").mockImplementation(x), x)
-
+const spyScrollTo = jest.fn()
 const warned = jest.spyOn(console, "warn").mockImplementation()
 describe("registerRouterDOM && Warnings due to root value of router output", () => {
+    beforeEach(() => {
+        Object.defineProperty(global.window, "scrollTo", { value: spyScrollTo })
+        Object.defineProperty(global.window, "scrollY", { value: 1 })
+        spyScrollTo.mockClear()
+    })
     const router_fn = url => ({ [URL_DATA]: true, [URL_PAGE]: 1 })
     registerRouterDOM(router_fn)
     const spy = jest.fn(x => x)
