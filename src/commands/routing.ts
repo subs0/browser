@@ -59,6 +59,7 @@ export const cmd_nav: ICommand = {
     [CMD_WORK]: navEventHandler,
 }
 
+// FIXME: figure out a better solution here (perhaps using a Map)
 const setLinkAttrs = target => {
     document?.body?.querySelectorAll("a[visited]").forEach((el: HTMLLinkElement) => {
         if (el.href === window.location.href) el.setAttribute("active", "")
@@ -109,6 +110,7 @@ const getScrollPos = () => ({
 const scrollodex = new Map()
 
 /**
+ *
  * Routing Command:
  * DOM-specific
  * (internal to /browser only)

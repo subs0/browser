@@ -140,6 +140,14 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
     return ROUTE_SUBTASK
 }
 
+const conflict_warning = `
+consider returning a \`${URL_DATA}\` property from your 
+router to isolate the data needed for this route
+`
+
+const no_data_warning = path => `
+no data associated with \`${URL_PATH}\`: ${path}
+`
 //const LOG_PROP = (PROP: string) =>
 //    registerCMD({
 //        [CMD_SUB$]: "_LOG_PROP_" + PROP,
@@ -206,11 +214,8 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
             [STATE_DATA]:
                 (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
                 acc[URL_DATA] ||
-                (console.warn(
-                    `consider returning a \`${URL_DATA}\` property from your router to isolate the data needed for this route`
-                ),
-                acc) ||
-                null,
+                (acc && console.warn(conflict_warning), acc) ||
+                console.warn(no_data_warning(acc[URL_PATH]), null),
         }),
     }
 
@@ -218,7 +223,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         _SET_ROUTE_LOADING_TRUE,
         { [CMD_ARGS]: args }, // Seed accumulator
         ...PREP,
-        _PUSHSTATE_IF_HREF,
+        _PUSHSTATE_IF_HREF, // deps: DOM_NODE
         args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
         _SET_ROUTE_VIEW_TO_PAGE,
         _SET_PATH_STATE_DATA,
