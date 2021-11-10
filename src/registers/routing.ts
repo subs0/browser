@@ -14,6 +14,7 @@ import {
     URL_PATH,
     POP_STATE,
     PUSH_STATE,
+    RouterCommand,
 } from "@-0/keys"
 import { run$, registerCMD } from "@-0/spool"
 import { Err_missing_props, URL2obj } from "@-0/utils"
@@ -71,7 +72,7 @@ import { SET_STATE } from "../commands"
  * // => 🎨: navigated to /some/path?and=query
  * ```
  */
-export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command = SET_STATE) => {
+export const registerRouterDOM = (CFG: Router | RouterCFG, setStateCMD: Command = SET_STATE): RouterCommand => {
     console.log("DOM Router Registered")
     const ROUTE_HOT = __DOM_URL__ROUTE(CFG, setStateCMD)
     const { [CMD_SUB$]: sub$, [CMD_ARGS]: args } = registerCMD({
