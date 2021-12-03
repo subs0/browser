@@ -2,7 +2,7 @@
     "name": "@-0/browser",
     "author": "Logan Powell",
     "license": "MIT",
-    "version": "0.3.70",
+    "version": "0.3.71",
     "description": "Browser helpers for -0 state management, routing and the interaction between",
     "main": "./lib/index.js",
     "type": "module",
@@ -33,7 +33,7 @@
     "dependencies": {
         "@-0/keys": "^0.3.65",
         "@-0/utils": "^0.3.62",
-        "@-0/spool": "^0.3.51",
+        "@-0/spool": "^0.3.52",
         "@thi.ng/paths": "^5.1.2",
         "@thi.ng/rstream": "^7.2.0"
     },

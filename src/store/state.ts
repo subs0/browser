@@ -35,6 +35,7 @@ export const set$$tate = (path: string[] = [], val = {}, store = $store$) => {
     return store.swapIn(path, x => {
         // if both swap and target are objects, merge
         // else just reset to val at path (i.e., careful!)
+        console.log({ x, val })
         const both_objects = isObject(x) && isObject(val)
         if (both_objects) return { ...x, ...val }
         if (!isObject(val) && !path.length) {
