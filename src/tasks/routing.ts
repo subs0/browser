@@ -206,6 +206,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
             [STATE_DATA]: acc[URL_PAGE] || (console.error(`no \`${URL_PAGE}\` found for this route`), null),
         }),
     }
+
     const _SET_PATH_STATE_DATA = {
         // hydrate page state
         ...SET_STATE,
