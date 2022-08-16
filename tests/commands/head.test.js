@@ -16,10 +16,9 @@ import {
 } from "@-0/keys"
 import { run$, registerCMD } from "@-0/spool"
 import { cmd_inject_head } from "../../src/commands"
-import { JSDOM } from "jsdom"
+//import { JSDOM } from "jsdom"
 
 let dom
-let container
 
 const html = `
 <!DOCTYPE html>
@@ -46,18 +45,19 @@ const html = `
 </html>
 `
 // prettier-ignore
-const head_post = ` <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta http-equiv="X-UA-Compatible" content="ie=edge">
- <meta property="og:type" content="image">
- <meta property="og:title" content="changed">
- <meta property="og:description" content="times are a changin'">
- <meta property="og:image" content="https://images.com/2">
- <meta property="og:image:width" content="400">
- <meta property="og:image:height" content="500">
- 
- <title>changed</title>
- <link rel="shortcut icon" sizes="57x57" href="NA" type="image/x-icon">`
+const head_post = ` 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta property="og:type" content="image">
+    <meta property="og:title" content="changed">
+    <meta property="og:description" content="times are a changin'">
+    <meta property="og:image" content="https://images.com/2">
+    <meta property="og:image:width" content="400">
+    <meta property="og:image:height" content="500">
+    <title>changed</title>
+    <link rel="shortcut icon" sizes="57x57" href="NA" type="image/x-icon">
+`
 
 //const warned = (x = jest.fn()) => (jest.spyOn(console, "warn").mockImplementation(x), x)
 
@@ -71,10 +71,11 @@ describe("head", () => {
         // This is indeed dangerous and should only be done with trusted content.
         // https://github.com/jsdom/jsdom#executing-scripts
 
-        dom = new JSDOM(html, { runScripts: "dangerously" })
-        global.window = dom.window
-        global.document = dom.window.document
-        global.document.head.innerHTML = dom.window.document.head.innerHTML
+        //dom = new JSDOM(html, { runScripts: "dangerously" })
+        //global.window = dom.window
+        //global.document = dom.window.document
+        //global.document.head.innerHTML = dom.window.document.head.innerHTML
+        document.head.innerHTML = html
     })
     test("head Command", () => {
         //console.log({ container: document.head.innerHTML })
@@ -94,6 +95,8 @@ describe("head", () => {
                 },
             },
         })
-        expect(document.head.innerHTML.replace(/ +(?= )|^\s*\n/g, "")).toBe(head_post)
+        expect(document.head.innerHTML.replace(/ +(?= )|^\s*\n/g, "").replace(/\s/g, "")).toBe(
+            head_post.replace(/\s/g, "")
+        )
     })
 })
