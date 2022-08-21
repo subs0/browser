@@ -33,6 +33,7 @@ const setFavicon = href => {
 }
 
 const getHeadProp = prop => () => document.head.querySelector(`meta[property="${prop}"]`)
+const getHeadName = name => () => document.head.querySelector(`meta[name="${name}"]`)
 
 // TODO currently throws CORS warning
 const meta = prop => (getHeadProp(prop)() && getHeadProp(prop)().content) || null
@@ -52,26 +53,6 @@ const defalt_cfg = {
 }
 
 declare var document: any
-
-const replaceMeta = (obj: any = defalt_cfg) => {
-    Object.entries(obj).forEach(([key, val]) => {
-        try {
-            return {
-                [HD_TITL]: () => {
-                    document.title = val
-                },
-                [HD_META]: () => {
-                    Object.entries(val).forEach(([prop, content]) => {
-                        if (getHeadProp(prop)()) getHeadProp(prop)().content = content
-                    })
-                },
-                [HD_ICON]: () => setFavicon(val),
-            }[key]()
-        } catch (e) {
-            console.warn(e)
-        }
-    })
-}
 
 const conformToHead = ({
     [HD_TITL]: title = defalt_cfg[HD_TITL],
@@ -95,10 +76,37 @@ const conformToHead = ({
         "og:image:width": img_width,
         "og:image:height": img_height,
         "og:image": img_url,
+        // reuse for twitter-specific metadata
+        "twitter:title": title,
+        "twitter:description": description,
+        "twitter:image": img_url,
     },
     [HD_TITL]: title,
     [HD_ICON]: favicon,
 })
+
+const replaceMeta = (obj: any = defalt_cfg) => {
+    Object.entries(obj).forEach(([key, val]) => {
+        try {
+            return {
+                [HD_TITL]: () => {
+                    document.title = val
+                },
+                [HD_META]: () => {
+                    Object.entries(val).forEach(([target, content]) => {
+                        // for OG Data
+                        if (getHeadProp(target)()) getHeadProp(target)().content = content
+                        // for Twitter Cards
+                        else if (getHeadName(target)()) getHeadName(target)().content = content
+                    })
+                },
+                [HD_ICON]: () => setFavicon(val),
+            }[key]()
+        } catch (e) {
+            console.warn(e)
+        }
+    })
+}
 
 interface apiURL {
     [URL_DATA: string]: {

@@ -18,8 +18,6 @@ import { run$, registerCMD } from "@-0/spool"
 import { cmd_inject_head } from "../../src/commands"
 //import { JSDOM } from "jsdom"
 
-let dom
-
 const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -39,6 +37,11 @@ const html = `
     />
     <meta property="og:image:width" content="1600" />
     <meta property="og:image:height" content="900" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Parade of Fans for Houston’s Funeral" />
+    <meta name="twitter:description" content="a twitter card description" />
+    <meta name="twitter:image" content="some.jpg" />
     <link rel="apple-touch-icon" sizes="57x57" href="assets/apple-icon-57x57.png" />
     <title>Page Title</title>
   </head>
@@ -55,6 +58,10 @@ const head_post = `
     <meta property="og:image" content="https://images.com/2">
     <meta property="og:image:width" content="400">
     <meta property="og:image:height" content="500">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="changed">
+    <meta name="twitter:description" content="times are a changin'">
+    <meta name="twitter:image" content="https://images.com/2">
     <title>changed</title>
     <link rel="shortcut icon" sizes="57x57" href="NA" type="image/x-icon">
 `
