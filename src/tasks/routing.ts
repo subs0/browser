@@ -225,9 +225,9 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         ...PREP,
         _SET_ROUTE_LOADING_TRUE,
         { [CMD_ARGS]: args }, // Seed accumulator
-        _SET_ROUTE_VIEW_TO_PAGE,
         _PUSHSTATE_IF_HREF, // deps: DOM_NODE
         args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
+        _SET_ROUTE_VIEW_TO_PAGE,
         _SET_PATH_STATE_DATA,
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
