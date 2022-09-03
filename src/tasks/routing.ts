@@ -8,7 +8,7 @@ import {
     _PUSHSTATE_IF_HREF,
     _RESTORE_SCROLL_IF_POPSTATE,
     //SET_STATE,
-    _NOTIFY_PRERENDER_DOM,
+    //_NOTIFY_PRERENDER_DOM,
     _SET_LINK_ATTRS_DOM,
     _SCROLL_TO_HASH,
 } from "../commands"
@@ -222,10 +222,10 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
     }
 
     const ROUTE_HOT = (args): Task => [
-        _SET_ROUTE_LOADING_TRUE,
-        _SET_ROUTE_VIEW_TO_PAGE,
-        { [CMD_ARGS]: args }, // Seed accumulator
         ...PREP,
+        _SET_ROUTE_LOADING_TRUE,
+        { [CMD_ARGS]: args }, // Seed accumulator
+        _SET_ROUTE_VIEW_TO_PAGE,
         _PUSHSTATE_IF_HREF, // deps: DOM_NODE
         args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
         _SET_PATH_STATE_DATA,
@@ -234,7 +234,6 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         _RESTORE_SCROLL_IF_POPSTATE,
         _SCROLL_TO_HASH,
         ...POST,
-        _NOTIFY_PRERENDER_DOM,
     ]
 
     return ROUTE_HOT
