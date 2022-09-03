@@ -212,6 +212,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         ...SET_STATE,
         [CMD_ARGS]: acc => ({
             [STATE_PATH]: acc[URL_PATH],
+            // TODO: enable synchronous calls to line up correctly
             [STATE_DATA]:
                 (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
                 acc[URL_DATA] ||
@@ -222,11 +223,11 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
 
     const ROUTE_HOT = (args): Task => [
         _SET_ROUTE_LOADING_TRUE,
+        _SET_ROUTE_VIEW_TO_PAGE,
         { [CMD_ARGS]: args }, // Seed accumulator
         ...PREP,
         _PUSHSTATE_IF_HREF, // deps: DOM_NODE
         args => UNIVERSAL_ROUTING_SUBTASK({ [URL_FULL]: args[URL_FULL] }),
-        _SET_ROUTE_VIEW_TO_PAGE,
         _SET_PATH_STATE_DATA,
         _SET_LINK_ATTRS_DOM, // deps: DOM_NODE
         _SET_ROUTE_LOADING_FALSE,
