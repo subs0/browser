@@ -99,7 +99,7 @@ const router_opts = (CFG: Router | RouterCFG) => {
  *
  */
 export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTask => {
-    const { urlToPageState, POST, PREP, prefix } = router_opts(CFG)
+    const { urlToPageState, POST = [], PREP = [], prefix } = router_opts(CFG)
 
     //console.log({ SET_STATE, topics: out$.topics.entries() })
     const _SET_ROUTE_PATH = {
