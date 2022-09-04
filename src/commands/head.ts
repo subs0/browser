@@ -125,10 +125,8 @@ ${URL_DATA}.${DOM_HEAD} props:`
  */
 const injectHead = (acc: apiURL) => {
     if (!acc || !Object.keys(acc).length) return
-    const data = acc[URL_DATA]
     // if no match URL__ROUTE Task sends -> URL_DATA: null
-    const send = data || { [DOM_HEAD]: {} }
-    const head = send[DOM_HEAD]
+    const head = acc[URL_DATA]?.[DOM_HEAD] || {}
     const reqs = {
         [URL_DATA]: {
             [DOM_HEAD]: head,

@@ -2,7 +2,7 @@
     "name": "@-0/browser",
     "author": "Logan Powell",
     "license": "MIT",
-    "version": "0.3.81",
+    "version": "0.3.82",
     "description": "Browser helpers for -0 state management, routing and the interaction between",
     "main": "./lib/index.js",
     "type": "module",
@@ -32,8 +32,8 @@
     },
     "dependencies": {
         "@-0/keys": "^0.3.73",
-        "@-0/utils": "^0.3.67",
         "@-0/spool": "^0.3.57",
+        "@-0/utils": "^0.3.67",
         "@thi.ng/paths": "^5.1.14",
         "@thi.ng/rstream": "^7.2.17"
     },
@@ -52,6 +52,7 @@
         "@typescript-eslint/eslint-plugin": "^5.36.1",
         "@typescript-eslint/parser": "^5.36.1",
         "babel-jest": "^29.0.2",
+        "caniuse-lite": "^1.0.30001388",
         "cross-env": "^7.0.3",
         "eslint": "^8.23.0",
         "eslint-plugin-jest": "^27.0.1",

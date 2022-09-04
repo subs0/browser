@@ -141,12 +141,14 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
 }
 
 const conflict_warning = `
-consider returning a \`${URL_DATA}\` property from your 
-router to isolate the data needed for this route
+!! You are setting state at the root of the store. Be careful !!
+Consider returning a \`${URL_DATA}\` property from your router 
+with a keyed object value (e.g., { data: {...}}) to isolate the 
+data needed for this route from other root state configuration
 `
 
 const no_data_warning = path => `
-no data associated with \`${URL_PATH}\`: ${path}
+No \`${URL_DATA}\`: data hydrated @\`${URL_PATH}\`: ${path ? path : "/"}
 `
 //const LOG_PROP = (PROP: string) =>
 //    registerCMD({
@@ -207,18 +209,49 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         }),
     }
 
+    //const HACKED_API_FIXME = async () => await new Promise(resolve => setTimeout(() => resolve({}), 0))
+
     const _SET_PATH_STATE_DATA = {
         // hydrate page state
         ...SET_STATE,
-        [CMD_ARGS]: acc => ({
-            [STATE_PATH]: acc[URL_PATH],
-            // TODO: enable synchronous calls to line up correctly
-            [STATE_DATA]:
-                (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
-                acc[URL_DATA] ||
-                (acc && console.warn(conflict_warning), acc) ||
-                console.warn(no_data_warning(acc[URL_PATH]), null),
-        }),
+        [CMD_ARGS]: acc => {
+            const { [URL_DATA]: data, [URL_PATH]: path } = acc
+            // no data at non-base/non-home route
+            if (!data) {
+                console.log(no_data_warning(acc[URL_PATH]))
+                if (!path?.length) console.log(conflict_warning)
+                return {
+                    [STATE_PATH]: path,
+                    /**
+                     * {}: stub out data placeholder for independent pages
+                     * acc: full accumulator for downstream dependencies
+                     **/
+                    [STATE_DATA]: {}, // path?.length ? {} : acc,
+                }
+            }
+            const { [DOM_BODY]: body, [DOM_HEAD]: head } = data
+            return {
+                [STATE_PATH]: path,
+                /**
+                 * !head && !body: non-nested payload configuration
+                 * head && !body: no data requisites for route = stub route {}
+                 * !head && body: nested payload = use body at path
+                 * head && body: nested payload = use body at path
+                 * TODO: consider if && how to handle non segregated root payloads
+                 */
+                [STATE_DATA]: !head && !body ? data : head && !body ? {} : body,
+            }
+
+            //return {
+            //    [STATE_PATH]: path,
+            //    // TODO: enable synchronous calls to line up correctly
+            //    [STATE_DATA]:
+            //        (acc[URL_DATA] && acc[URL_DATA][DOM_BODY]) ||
+            //        acc[URL_DATA] ||
+            //        (acc && console.warn(conflict_warning), acc) ||
+            //        console.warn(no_data_warning(acc[URL_PATH]), null),
+            //}
+        },
     }
 
     const ROUTE_HOT = (args): Task => [
