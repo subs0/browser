@@ -141,14 +141,14 @@ export const __URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): HOTas
 }
 
 const conflict_warning = `
-!! You are setting state at the root of the store. Be careful !!
+👀 You are setting state at the root of the store. Be careful!
 Consider returning a \`${URL_DATA}\` property from your router 
 with a keyed object value (e.g., { data: {...}}) to isolate the 
 data needed for this route from other root state configuration
 `
 
 const no_data_warning = path => `
-No \`${URL_DATA}\`: data hydrated @\`${URL_PATH}\`: ${path ? path : "/"}
+No data (\`${URL_DATA}\`) hydrated @\`${URL_PATH}\`: ${path ? path : "/"}
 `
 //const LOG_PROP = (PROP: string) =>
 //    registerCMD({
@@ -209,7 +209,7 @@ export const __DOM_URL__ROUTE = (CFG: Router | RouterCFG, SET_STATE: Command): H
         }),
     }
 
-    //const HACKED_API_FIXME = async () => await new Promise(resolve => setTimeout(() => resolve({}), 0))
+    const HACKED_API_FIXME = async () => await new Promise(resolve => setTimeout(() => resolve({}), 0))
 
     const _SET_PATH_STATE_DATA = {
         // hydrate page state
